@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <title>Gemini API Vercel 테스트</title>
+</head>
+<body>
+    <h1>Gemini AI에게 무엇이든 물어보세요 (Vercel)</h1>
+    <input type="text" id="promptInput" placeholder="여기에 질문을 입력하세요..." size="50">
+    <button onclick="askAI()">질문하기</button>
+    <hr>
+    <h2>답변:</h2>
+    <p id="resultArea">...</p>
+
+    <script>
+        async function askAI() {
+            const resultArea = document.getElementById('resultArea');
+            const question = document.getElementById('promptInput').value;
+            resultArea.textContent = "생각 중...";
+
+            try {
+                const response = await fetch('/api/ask-gemini', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ prompt: question })
+                });
+                const data = await response.json();
+                if (response.ok) {
+                    resultArea.textContent = data.answer;
+                } else {
+                    resultArea.textContent = `오류: ${data.error}`;
+                }
+            } catch (error) {
+                resultArea.textContent = "호출에 실패했습니다. 개발자 콘솔을 확인해주세요.";
+                console.error('Fetch Error:', error);
+            }
+        }
+    </script>
+</body>
+</html>
